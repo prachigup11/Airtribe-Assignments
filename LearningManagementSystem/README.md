@@ -8,7 +8,6 @@ A Java-based Library Management System that supports book and patron management,
 - Patron management: register patrons, update details, and track borrowing history.
 - Lending process: checkout and return books.
 - Inventory tracking: list available and borrowed books per branch.
-- Optional extension: multi-branch support and reservation notifications.
 - Logging: uses built-in Java logging for audit and error events.
 
 ## Project Structure
