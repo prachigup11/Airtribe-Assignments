@@ -1,0 +1,48 @@
+package com.airtribe.library.service.reservation;
+
+import com.airtribe.library.model.Book;
+import com.airtribe.library.service.LibraryService;
+
+import java.util.*;
+import java.util.logging.Logger;
+
+public class ReservationManager {
+    private static final Logger LOGGER = Logger.getLogger(ReservationManager.class.getName());
+
+    private final Map<String, Queue<Reservation>> reservationMap;
+    private final LibraryService libraryService;
+
+    public ReservationManager(LibraryService libraryService) {
+        this.libraryService = libraryService;
+        this.reservationMap = new HashMap<>();
+    }
+
+    public void reserveBook(String isbn, String patronId) {
+        reservationMap.computeIfAbsent(isbn, key -> new LinkedList<>())
+                .add(new Reservation(isbn, patronId));
+        LOGGER.info(String.format("Reservation added for book %s by patron %s", isbn, patronId));
+    }
+
+    public Reservation getNextReservation(String isbn) {
+        Queue<Reservation> queue = reservationMap.get(isbn);
+        return (queue == null || queue.isEmpty()) ? null : queue.peek();
+    }
+
+    public void fulfillNextReservation(String isbn) {
+        Queue<Reservation> queue = reservationMap.get(isbn);
+        if (queue != null) {
+            Reservation reservation = queue.poll();
+            if (reservation != null) {
+                LOGGER.info(String.format("Reservation fulfilled for book %s: patron %s", isbn, reservation.getPatronId()));
+            }
+        }
+    }
+
+    public void notifyIfReserved(Book book) {
+        Reservation reservation = getNextReservation(book.getIsbn());
+        if (reservation != null) {
+            LOGGER.info(String.format("Reserved book available: %s for patron %s", book.getIsbn(), reservation.getPatronId()));
+            fulfillNextReservation(book.getIsbn());
+        }
+    }
+}

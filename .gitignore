@@ -1,0 +1,14 @@
+# Ignore build output and logs for the LearningManagementSystem project
+LearningManagementSystem/target/
+LearningManagementSystem/out/
+LearningManagementSystem/logs/
+
+# Maven local repository
+**/target/
+
+# IntelliJ / IDE files
+*.iml
+.idea/
+
+# OS files
+.DS_Store
