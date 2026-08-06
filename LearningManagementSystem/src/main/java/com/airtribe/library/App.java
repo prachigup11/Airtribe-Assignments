@@ -5,7 +5,6 @@ import com.airtribe.library.model.LibraryBranch;
 import com.airtribe.library.model.Patron;
 import com.airtribe.library.service.BookFactory;
 import com.airtribe.library.service.LibraryService;
-import com.airtribe.library.service.reservation.ReservationManager;
 import com.airtribe.library.util.ConsoleLogger;
 
 import java.io.IOException;
@@ -14,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -27,30 +27,48 @@ public class App {
         LibraryService libraryService = new LibraryService();
 
         LibraryBranch mainBranch = new LibraryBranch("branch-1", "Main Branch");
+        LibraryBranch eastBranch = new LibraryBranch("branch-2", "East Branch");
         libraryService.addBranch(mainBranch);
+        libraryService.addBranch(eastBranch);
 
-        Book book1 = BookFactory.createBook("9780134685991", "Effective Java", "Joshua Bloch", 2018);
-        Book book2 = BookFactory.createBook("9780596009205", "Head First Java", "Kathy Sierra", 2005);
+        Book book1 = BookFactory.createBook("9780134685991", "Effective Java", "Joshua Bloch", 2018, Set.of("Programming", "Java"));
+        Book book2 = BookFactory.createBook("9780596009205", "Head First Java", "Kathy Sierra", 2005, Set.of("Java", "Learning"));
+        Book book3 = BookFactory.createBook("9781491950357", "Designing Data-Intensive Applications", "Martin Kleppmann", 2017, Set.of("Data", "Architecture"));
+
         libraryService.addBook(mainBranch.getBranchId(), book1);
         libraryService.addBook(mainBranch.getBranchId(), book2);
+        libraryService.addBook(eastBranch.getBranchId(), book3);
 
-        Patron patron = new Patron("patron-1", "Alice Walker", "alice@example.com");
-        libraryService.addPatron(patron);
+        Patron alice = new Patron("patron-1", "Alice Walker", "alice@example.com");
+        alice.addPreferredGenre("Java");
+        alice.addPreferredGenre("Programming");
+        libraryService.addPatron(alice);
 
-        libraryService.checkoutBook(mainBranch.getBranchId(), book1.getIsbn(), patron.getPatronId());
-        ConsoleLogger.log("Borrowing history: " + patron.getBorrowingHistory());
+        Patron bob = new Patron("patron-2", "Bob Martin", "bob@example.com");
+        bob.addPreferredGenre("Data");
+        libraryService.addPatron(bob);
 
-        libraryService.returnBook(mainBranch.getBranchId(), book1.getIsbn(), patron.getPatronId());
+        libraryService.checkoutBook(mainBranch.getBranchId(), book1.getIsbn(), alice.getPatronId());
+        alice.addBorrowedGenre("Java");
+        ConsoleLogger.log("Alice borrowing history: " + alice.getBorrowingHistory());
 
-        List<Book> searchResults = libraryService.searchBooks("Java");
-        ConsoleLogger.log("Search results: " + searchResults);
+        libraryService.reserveBook(mainBranch.getBranchId(), book1.getIsbn(), bob.getPatronId());
+        ConsoleLogger.log("Bob reserved book: " + book1.getTitle());
 
-        ReservationManager reservationManager = libraryService.getReservationManager();
-        reservationManager.reserveBook(book1.getIsbn(), patron.getPatronId());
-        libraryService.checkoutBook(mainBranch.getBranchId(), book2.getIsbn(), patron.getPatronId());
+        libraryService.checkoutBook(mainBranch.getBranchId(), book2.getIsbn(), alice.getPatronId());
+        alice.addBorrowedGenre("Java");
 
-        ConsoleLogger.log("Available books: " + libraryService.listAvailableBooks(mainBranch.getBranchId()));
-        ConsoleLogger.log("Borrowed books: " + libraryService.listBorrowedBooks(mainBranch.getBranchId()));
+        libraryService.returnBook(mainBranch.getBranchId(), book1.getIsbn(), alice.getPatronId());
+
+        libraryService.transferBook(eastBranch.getBranchId(), mainBranch.getBranchId(), book3.getIsbn());
+        ConsoleLogger.log("Transferred book to Main Branch: " + book3.getTitle());
+
+        List<Book> recommendationsForBob = libraryService.recommendBooks(mainBranch.getBranchId(), bob.getPatronId());
+        ConsoleLogger.log("Recommendations for Bob: " + recommendationsForBob);
+
+        ConsoleLogger.log("Available books in Main Branch: " + libraryService.listAvailableBooks(mainBranch.getBranchId()));
+        ConsoleLogger.log("Borrowed books in Main Branch: " + libraryService.listBorrowedBooks(mainBranch.getBranchId()));
+        ConsoleLogger.log("Available books in East Branch: " + libraryService.listAvailableBooks(eastBranch.getBranchId()));
 
         LOGGER.info("Library Management System finished successfully");
     }

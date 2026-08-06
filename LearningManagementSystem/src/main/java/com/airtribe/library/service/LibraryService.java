@@ -3,6 +3,9 @@ package com.airtribe.library.service;
 import com.airtribe.library.model.Book;
 import com.airtribe.library.model.LibraryBranch;
 import com.airtribe.library.model.Patron;
+import com.airtribe.library.service.notification.EmailNotificationService;
+import com.airtribe.library.service.recommendation.GenreBasedRecommendationStrategy;
+import com.airtribe.library.service.recommendation.RecommendationService;
 import com.airtribe.library.service.reservation.ReservationManager;
 
 import java.util.*;
@@ -15,11 +18,13 @@ public class LibraryService {
     private final Map<String, LibraryBranch> branches;
     private final Map<String, Patron> patrons;
     private final ReservationManager reservationManager;
+    private final RecommendationService recommendationService;
 
     public LibraryService() {
         this.branches = new HashMap<>();
         this.patrons = new HashMap<>();
-        this.reservationManager = new ReservationManager(this);
+        this.reservationManager = new ReservationManager(this, new EmailNotificationService());
+        this.recommendationService = new RecommendationService(new GenreBasedRecommendationStrategy());
     }
 
     public void addBranch(LibraryBranch branch) {
@@ -53,6 +58,62 @@ public class LibraryService {
             return;
         }
         LOGGER.info(String.format("Book removed from branch %s: %s", branch.getName(), isbn));
+    }
+
+    public void transferBook(String sourceBranchId, String destinationBranchId, String isbn) {
+        LibraryBranch sourceBranch = branches.get(sourceBranchId);
+        LibraryBranch destinationBranch = branches.get(destinationBranchId);
+
+        if (sourceBranch == null) {
+            LOGGER.severe(String.format("Source branch not found: %s", sourceBranchId));
+            throw new IllegalArgumentException("Source branch not found: " + sourceBranchId);
+        }
+        if (destinationBranch == null) {
+            LOGGER.severe(String.format("Destination branch not found: %s", destinationBranchId));
+            throw new IllegalArgumentException("Destination branch not found: " + destinationBranchId);
+        }
+        if (!sourceBranch.hasBook(isbn)) {
+            LOGGER.warning(String.format("Book not found in source branch %s: %s", sourceBranch.getName(), isbn));
+            return;
+        }
+        Book book = sourceBranch.removeBook(isbn);
+        destinationBranch.addBook(book);
+        LOGGER.info(String.format("Book transferred from %s to %s: %s", sourceBranch.getName(), destinationBranch.getName(), book));
+    }
+
+    public void reserveBook(String branchId, String isbn, String patronId) {
+        Book book = getBook(branchId, isbn);
+        Patron patron = patrons.get(patronId);
+
+        if (book == null) {
+            LOGGER.severe(String.format("Book not found for reservation: %s in branch %s", isbn, branchId));
+            throw new IllegalArgumentException("Book not found: " + isbn);
+        }
+        if (patron == null) {
+            LOGGER.severe(String.format("Patron not found for reservation: %s", patronId));
+            throw new IllegalArgumentException("Patron not found: " + patronId);
+        }
+        if (book.isAvailable()) {
+            LOGGER.warning(String.format("Book is available and should be checked out instead of reserved: %s", isbn));
+            return;
+        }
+        reservationManager.reserveBook(isbn, patronId);
+    }
+
+    public List<Book> recommendBooks(String branchId, String patronId) {
+        Patron patron = patrons.get(patronId);
+        LibraryBranch branch = branches.get(branchId);
+
+        if (patron == null) {
+            LOGGER.severe(String.format("Patron not found for recommendation: %s", patronId));
+            throw new IllegalArgumentException("Patron not found: " + patronId);
+        }
+        if (branch == null) {
+            LOGGER.severe(String.format("Branch not found for recommendation: %s", branchId));
+            throw new IllegalArgumentException("Branch not found: " + branchId);
+        }
+        List<Book> availableBooks = branch.getAvailableBooks();
+        return recommendationService.recommend(patron, availableBooks);
     }
 
     public void updateBook(String branchId, String isbn, String title, String author, int publicationYear) {

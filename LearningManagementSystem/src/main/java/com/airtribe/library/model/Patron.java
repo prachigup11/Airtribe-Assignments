@@ -1,20 +1,27 @@
 package com.airtribe.library.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class Patron {
     private final String patronId;
     private String name;
     private String email;
     private final List<String> borrowingHistory;
+    private final Set<String> borrowedGenres;
+    private final Set<String> preferredGenres;
 
     public Patron(String patronId, String name, String email) {
         this.patronId = patronId;
         this.name = name;
         this.email = email;
         this.borrowingHistory = new ArrayList<>();
+        this.borrowedGenres = new HashSet<>();
+        this.preferredGenres = new HashSet<>();
     }
 
     public String getPatronId() {
@@ -43,6 +50,26 @@ public class Patron {
 
     public void addBorrowingHistory(String isbn) {
         borrowingHistory.add(isbn);
+    }
+
+    public Set<String> getBorrowedGenres() {
+        return Collections.unmodifiableSet(borrowedGenres);
+    }
+
+    public void addBorrowedGenre(String genre) {
+        if (genre != null && !genre.isBlank()) {
+            borrowedGenres.add(genre);
+        }
+    }
+
+    public Set<String> getPreferredGenres() {
+        return Collections.unmodifiableSet(preferredGenres);
+    }
+
+    public void addPreferredGenre(String genre) {
+        if (genre != null && !genre.isBlank()) {
+            preferredGenres.add(genre);
+        }
     }
 
     @Override
