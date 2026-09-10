@@ -6,6 +6,9 @@ LearningManagementSystem/logs/
 # Maven local repository
 **/target/
 
+# Runtime logs
+SmartParkingLotSystem/logs/
+
 # IntelliJ / IDE files
 *.iml
 .idea/
