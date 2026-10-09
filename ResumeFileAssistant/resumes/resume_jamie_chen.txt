@@ -1,0 +1,17 @@
+Jamie Chen
+Data Engineer
+
+SUMMARY
+Data engineer focused on dependable analytics pipelines and clear data contracts.
+
+EXPERIENCE
+Data Engineer, Greenfield Health (2020-present)
+- Developed Python and SQL pipelines that join clinical and operations datasets.
+- Orchestrated daily workloads with Airflow and stored curated tables in Snowflake.
+- Partnered with analysts to document data quality checks and metric definitions.
+
+EDUCATION
+M.S. Information Systems, Westbridge College, 2020
+
+SKILLS
+Python, SQL, Airflow, Snowflake, dbt, Git, data modeling

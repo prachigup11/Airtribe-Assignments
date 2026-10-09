@@ -1,0 +1,17 @@
+Sam Williams
+Site Reliability Engineer
+
+SUMMARY
+Site reliability engineer experienced in incident response, observability, and cloud operations.
+
+EXPERIENCE
+SRE, Harbor Systems (2018-present)
+- Automated infrastructure provisioning with Terraform and Python utilities.
+- Created service-level dashboards and alerts using Prometheus and Grafana.
+- Coordinated incident reviews and follow-up reliability improvements.
+
+EDUCATION
+B.S. Information Technology, Summit State, 2018
+
+SKILLS
+Linux, Python, Terraform, AWS, Kubernetes, Prometheus, Grafana, incident response

@@ -1,0 +1,17 @@
+Taylor Reed
+Frontend Engineer
+
+SUMMARY
+Frontend engineer with a track record of accessible, responsive product interfaces.
+
+EXPERIENCE
+Software Engineer, Brightpath Studio (2019-present)
+- Built customer dashboards with TypeScript, React, and reusable design components.
+- Reduced initial page load time by 28% through bundle analysis and lazy loading.
+- Worked with design and QA to improve keyboard navigation and screen-reader support.
+
+EDUCATION
+B.A. Digital Media, North Coast University, 2019
+
+SKILLS
+TypeScript, React, JavaScript, HTML, CSS, accessibility, Playwright

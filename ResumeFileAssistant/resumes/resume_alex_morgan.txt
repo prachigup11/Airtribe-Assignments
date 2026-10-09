@@ -1,0 +1,17 @@
+Alex Morgan
+Backend Software Engineer
+
+SUMMARY
+Backend engineer with 6 years of experience building reliable services and data platforms.
+
+EXPERIENCE
+Senior Engineer, Northstar Analytics (2021-present)
+- Built Python and FastAPI services processing 2 million events per day.
+- Improved PostgreSQL query performance by 35% and added automated test coverage.
+- Deployed containerized workloads to AWS using Docker and Kubernetes.
+
+EDUCATION
+B.S. Computer Science, Lakeview University, 2018
+
+SKILLS
+Python, FastAPI, PostgreSQL, AWS, Docker, Kubernetes, pytest

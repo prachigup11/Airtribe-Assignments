@@ -1,0 +1,17 @@
+Riley Patel
+Machine Learning Engineer
+
+SUMMARY
+Machine learning engineer specializing in production model pipelines and evaluation.
+
+EXPERIENCE
+ML Engineer, Cedar Robotics (2022-present)
+- Prototyped ranking models with Python, scikit-learn, and PyTorch.
+- Built repeatable feature pipelines and model evaluation reports for product teams.
+- Added drift monitoring and documented model release criteria.
+
+EDUCATION
+M.S. Computer Engineering, Redwood Institute, 2022
+
+SKILLS
+Python, PyTorch, scikit-learn, pandas, MLflow, Docker, model evaluation
