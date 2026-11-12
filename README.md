@@ -5,3 +5,4 @@
 - [Learning Management System](LearningManagementSystem/README.md)
 - [Smart Parking Lot System](SmartParkingLotSystem/README.md)
 - [Resume File Assistant](ResumeFileAssistant/README.md)
+- [Resume MCP Assistant](ResumeMCPAssistant/README.md)
